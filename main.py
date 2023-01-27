@@ -19,12 +19,30 @@ client5 = Client("5", "Grzegorz", "Braun", "005", 	455.38)
 clientsList = [client1, client2, client3, client4, client5]
 
 
-def moneyAmountToTransfer(n):
+def moneyAmountToTransfer(transferIdAcc, userIdAcc):
     moneyAmount = input('PODAJ KWOTĘ PRZELEWU: ')
+    x = clientsList[userIdAcc-1]
+    y = clientsList[transferIdAcc-1]
+
+    if moneyAmount.isdigit():
+        moneyAmount = int(moneyAmount)
+        if (x.accbalance < moneyAmount):
+            os.system('cls')
+            print('NIEWYSTARCZAJĄCE ŚRODKI NA RACHUNKU')
+        else:
+            x.accbalance = x.accbalance - moneyAmount
+            y.accbalance = y.accbalance + moneyAmount
+            os.system('cls')
+            print('PRZELEW ZOSTAŁ WYKONANY')
+            showClientsList()
+        input()
+    else:
+        print('NIEPRAWIDŁOWA KWOTA')
+        input()
 
 
-def checkNumberToTransfer(n):
-    n = int(n)
+def checkNumberToTransfer(loggedIdAccountNumber):
+    loggedIdAccountNumber = int(loggedIdAccountNumber)
     transferAccountNumber = input(
         'WPISZ NUMER KONTA NA KTÓRY CHCESZ WYKONAĆ PRZELEW: ')
     for x in clientsList:
@@ -36,10 +54,12 @@ def checkNumberToTransfer(n):
 
     if idAccountNumber == None:
         print('NIEPRAWIDŁOWY NUMER KONTA')
-    elif idAccountNumber == n:
+        input()
+    elif idAccountNumber == loggedIdAccountNumber:
         print('NIE MOŻESZ ZROBIĆ PRZELEWU NA WŁASNE KONTO.')
+        input()
     else:
-        moneyAmountToTransfer(idAccountNumber)
+        moneyAmountToTransfer(idAccountNumber, loggedIdAccountNumber)
         # print(clientsList[idAccountNumber-1].accbalance)
 
 
@@ -48,7 +68,6 @@ def showClientsList():
     for x in clientsList:
         print(x.id, "|", x.name, "|", x.lastname,
               "|", x.accnumber, "|", x.accbalance, "zł")
-    showMenu()
 
 
 def loginSuccessful(n):
@@ -86,6 +105,7 @@ def showMenu():
     os.system('cls')
     if (userChoice == '1'):
         showClientsList()
+        showMenu()
     elif (userChoice == '2'):
         login()
     else:
