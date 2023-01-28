@@ -1,5 +1,8 @@
 import os
 
+redFont = '\x1b[38;2;255;0;0m'
+greenFont = '\x1b[38;2;124;252;0m'
+
 
 class Client:
     def __init__(self, id, name, lastname, accnumber, accbalance):
@@ -20,87 +23,96 @@ clientsList = [client1, client2, client3, client4, client5]
 
 
 def moneyAmountToTransfer(transferIdAcc, userIdAcc):
-    moneyAmount = input('PODAJ KWOTĘ PRZELEWU: ')
+    moneyAmount = input('\n PODAJ KWOTĘ PRZELEWU: ')
+    os.system('cls')
     x = clientsList[userIdAcc-1]
     y = clientsList[transferIdAcc-1]
 
-    if moneyAmount.isdigit():
-        moneyAmount = int(moneyAmount)
+    moneyAmountType = True
+
+    try:
+        float(moneyAmount)
+    except ValueError:
+        moneyAmountType = False
+
+    if moneyAmountType:
+        moneyAmount = float(moneyAmount)
         if (x.accbalance < moneyAmount):
-            os.system('cls')
-            print('NIEWYSTARCZAJĄCE ŚRODKI NA RACHUNKU')
+            print(
+                redFont + '\n NIEWYSTARCZAJĄCE ŚRODKI NA RACHUNKU' + '\x1b[0m')
         else:
             x.accbalance = x.accbalance - moneyAmount
             y.accbalance = y.accbalance + moneyAmount
-            os.system('cls')
-            print('PRZELEW ZOSTAŁ WYKONANY')
+            x.accbalance = round(x.accbalance, 2)
+            y.accbalance = round(y.accbalance, 2)
+            print(greenFont + '\n PRZELEW ZOSTAŁ WYKONANY' + '\x1b[0m')
             showClientsList()
         input()
     else:
-        print('NIEPRAWIDŁOWA KWOTA')
+        print(redFont + '\n NIEPRAWIDŁOWA KWOTA' + '\x1b[0m')
         input()
 
 
 def checkNumberToTransfer(loggedIdAccountNumber):
     loggedIdAccountNumber = int(loggedIdAccountNumber)
     transferAccountNumber = input(
-        'WPISZ NUMER KONTA NA KTÓRY CHCESZ WYKONAĆ PRZELEW: ')
+        '\n WPISZ NUMER KONTA NA KTÓRY CHCESZ WYKONAĆ PRZELEW: ')
+    os.system('cls')
     for x in clientsList:
         if x.accnumber == transferAccountNumber:
             idAccountNumber = int(x.id)
             break
         else:
             idAccountNumber = None
-
     if idAccountNumber == None:
-        print('NIEPRAWIDŁOWY NUMER KONTA')
+        print(redFont + '\n NIEPRAWIDŁOWY NUMER KONTA' + '\x1b[0m')
         input()
     elif idAccountNumber == loggedIdAccountNumber:
-        print('NIE MOŻESZ ZROBIĆ PRZELEWU NA WŁASNE KONTO.')
+        print(
+            redFont + '\n NIE MOŻESZ ZROBIĆ PRZELEWU NA WŁASNE KONTO.' + '\x1b[0m')
         input()
     else:
         moneyAmountToTransfer(idAccountNumber, loggedIdAccountNumber)
-        # print(clientsList[idAccountNumber-1].accbalance)
 
 
 def showClientsList():
-    print('ID | IMIĘ I NAZWISKO | NR KONTA | SALDO')
+    print('\n ID | IMIĘ I NAZWISKO | NR KONTA | SALDO\n')
     for x in clientsList:
-        print(x.id, "|", x.name, "|", x.lastname,
-              "|", x.accnumber, "|", x.accbalance, "zł")
+        print(' ', x.id, "|", x.name, x.lastname,
+              "|", x.accnumber, "|", x.accbalance, "zł\n")
 
 
 def loginSuccessful(n):
-    print('ZALOGOWANY KLIENT')
-    print('ID:', clientsList[n-1].id)
-    print('IMIĘ I NAZWISKO:', clientsList[n-1].name, clientsList[n-1].lastname)
-    print('NR KONTA:', clientsList[n-1].accnumber)
-    print('SALDO:', clientsList[n-1].accbalance)
+    print('\n ZALOGOWANY KLIENT')
+    print('\n ID:', clientsList[n-1].id)
+    print('\n IMIĘ I NAZWISKO:',
+          clientsList[n-1].name, clientsList[n-1].lastname)
+    print('\n NR KONTA:', clientsList[n-1].accnumber)
+    print('\n SALDO:', clientsList[n-1].accbalance, 'zł')
     checkNumberToTransfer(clientsList[n-1].id)
 
 
 def login():
-    clientIdLogin = input('ZALOGUJ SIĘ WYBIERAJĄC ID KLIENTA: ')
+    clientIdLogin = input('\n ZALOGUJ SIĘ WYBIERAJĄC ID KLIENTA: ')
     os.system('cls')
     if clientIdLogin.isdigit():
         clientIdLogin = int(clientIdLogin)
-        if (clientIdLogin < 1 or clientIdLogin > len(clientsList)):
-            print('Logowanie nieudane!')
-            input()
-        else:
+        if (clientIdLogin > 0 and clientIdLogin <= len(clientsList)):
             loginSuccessful(clientIdLogin)
+        else:
+            print(redFont + '\n Logowanie nieudane!' + '\x1b[0m')
+            input()
     else:
-        print('Logowanie nieudane!')
+        print(redFont + '\n Logowanie nieudane!' + '\x1b[0m')
         input()
 
 
 def showMenu():
-    print('WYBIERZ OPCJĘ:')
-    print('1 => LISTA WSZYSTKICH KLIENTÓW BANKU')
-    print('2 => LOGOWANIE')
-    print('3 => ZAKOŃCZ PROGRAM')
-    print('WYBIERZ 1, 2 LUB 3:')
-    userChoice = input()
+    print('\n WYBIERZ OPCJĘ:\n')
+    print(' 1 => LISTA WSZYSTKICH KLIENTÓW BANKU\n')
+    print(' 2 => LOGOWANIE\n')
+    print(' 3 => ZAKOŃCZ PROGRAM\n')
+    userChoice = input(' WYBIERZ 1, 2 LUB 3: ')
     userChoice = str(userChoice)
     os.system('cls')
     if (userChoice == '1'):
