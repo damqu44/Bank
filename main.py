@@ -13,7 +13,7 @@ class Client:
         self.accbalance = accbalance
 
 
-client1 = Client("1", "Jan", "Nowak", "001", 1457.23)
+client1 = Client("1", "Jan", "Nowak", "001", 1457.24)
 client2 = Client("2", "Agnieszka", "Kowalska", "002", 3600.18)
 client3 = Client("3", "Robert", "Lewandowski", "003", 2745.03)
 client4 = Client("4", "Zofia", "Płucińska", "004", 	7344.00)
